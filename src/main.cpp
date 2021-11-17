@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include <SPI.h>
 #include <Ticker.h>
 #include <ESP8266WiFi.h>
@@ -28,11 +29,10 @@ WiFiClient espClient;
 #include "web/update.h"
 #include "weather.h"
 #include "temp.h"
-#include "time.h"
+#include "ntp.h"
 #include "web/Mqtt/mqtt.h"
 #include "alarm.h"
 #include "web/page.h"
-
 
            
               
