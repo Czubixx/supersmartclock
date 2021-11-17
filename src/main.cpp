@@ -16,7 +16,7 @@
 #include <EEPROM.h>
 #include <Wire.h>
 
-#include "web/PAGES.h"
+#include "web/page.h"
 #include "Font_Data.h"
 
 WiFiClient espClient;
@@ -32,7 +32,7 @@ WiFiClient espClient;
 #include "ntp.h"
 #include "web/Mqtt/mqtt.h"
 #include "alarm.h"
-#include "web/page.h"
+#include "web/server.h"
 
            
               
