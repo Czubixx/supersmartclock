@@ -53,7 +53,7 @@ void renderPageSetup(){
         fileWrite.close();
 
         server.sendHeader("Access-Control-Allow-Origin", "*");
-        server.send(200, "text/plain", "OK");
+        server.send(200, "application/json", "{\"status\":200}");
         getNightMode();
     });
 
@@ -131,9 +131,7 @@ void renderPageSetup(){
         fileWrite.close();
 
         server.sendHeader("Access-Control-Allow-Origin", "*");
-        server.send(200, "text/plain", "OK");
-        ESP.restart();
-        
+        server.send(200, "application/json", "{\"status\":200}");
     });
     
     server.on("/set/brightness", HTTP_POST, []() {
@@ -173,7 +171,8 @@ void renderPageSetup(){
         serializeJsonPretty(configFile, Serial);
         fileWrite.close();
 
-        ESP.restart();
+        server.sendHeader("Access-Control-Allow-Origin", "*");
+        server.send(200, "application/json", "{\"status\":200}");
         
     });
 
@@ -199,6 +198,8 @@ void renderPageSetup(){
         fileWrite.close();
 
         setTemperature();
+        server.sendHeader("Access-Control-Allow-Origin", "*");
+        server.send(200, "application/json", "{\"status\":200}");
     });
 
     server.on("/set/weather", HTTP_POST, []() {
@@ -223,6 +224,8 @@ void renderPageSetup(){
         File fileWrite = SPIFFS.open("/config.json", "w");
         serializeJsonPretty(configFile, fileWrite);
         serializeJsonPretty(configFile, Serial);
+        server.sendHeader("Access-Control-Allow-Origin", "*");
+        server.send(200, "application/json", "{\"status\":200}");
         fileWrite.close();
 
         ESP.restart();
@@ -256,9 +259,10 @@ void renderPageSetup(){
         File fileWrite = SPIFFS.open("/config.json", "w");
         serializeJsonPretty(configFile, fileWrite);
         serializeJsonPretty(configFile, Serial);
+
         fileWrite.close();
-
-
+        server.sendHeader("Access-Control-Allow-Origin", "*");
+        server.send(200, "application/json", "{\"status\":200}");
         ESP.restart();
     });
 
@@ -382,7 +386,13 @@ void renderPageSetup(){
     },[] () {updateOTA();});
 
     
-    
+    server.on("/restart", HTTP_POST, [] () {
+        
+        server.sendHeader("Access-Control-Allow-Origin", "*");
+        server.send(200, "application/json", "{\"status\":200}");
+        ESP.restart();
+    });
+
     server.on("/data", []() {
         DynamicJsonDocument doc(1024);
 
