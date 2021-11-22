@@ -1,10 +1,10 @@
 
 bool getWeatherDelay = true;
-int getWeatherDelay_Run = 0;
+unsigned long getWeatherDelay_Run = 0;
 bool fahrenheit = true;
 
 void getWeather(){
-    if((millis() - getWeatherDelay_Run) >= 60000 && minute() == 40){
+    if((unsigned long)(millis() - getWeatherDelay_Run) >= 60000 && minute() == 40){
         getWeatherDelay = true;
         getWeatherDelay_Run = millis();
     }
@@ -29,7 +29,8 @@ void getWeather(){
             deserializeJson(weatherJSON, payload);
             Serial.println(payload);
             float cod = weatherJSON["list"][0]["main"]["temp"];
-            if(weatherTempInfahrenheit()){
+            weatherTempInfahrenheit();
+            if(weatherTempFahrenheit){
                 cod = (cod*1.8)+32;
                 dtostrf(cod, 4, 1, weatherTemp);
                 Serial.println(weatherTemp[0]);

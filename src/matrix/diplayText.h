@@ -1,6 +1,6 @@
 unsigned int d_PosX = 0;      
 unsigned int z_PosX = 0;
-int speed = 60;
+int speed = 30;
 bool display_temperature = false;
 String stringMessage;
 bool scrolingText = false;
@@ -94,14 +94,9 @@ void ScrollTextAnimation(){
         String stringText = " ";
         stringText += stringMessage;
         bufSize = stringText.length() + 1;
-        
-
-
+    
         stringText.toCharArray(text, bufSize);
-
     }
-
-
 
     d_PosX++;
     z_PosX++;
@@ -113,7 +108,7 @@ void ScrollTextAnimation(){
     if (z_PosX == maxPosX) {
         scrolingText = false;
         conwert_data = true;
-        d_PosX = -10;
+        d_PosX = -4;
     }
     
     for (size_t i = 1; i < bufSize; i++)
@@ -123,44 +118,42 @@ void ScrollTextAnimation(){
 
     refresh_display();
 
-    delay(speed);
+    delay(50);
 }
 
 
 void displayTemperature(){
+  
     d_PosX++;
     z_PosX++;
       
-    if (d_PosX == 50)
+    if (d_PosX == 55)
         z_PosX = 0;
-    if(d_PosX == 35)
+    if(d_PosX == 40)
         delay(3000);
     if (z_PosX == maxPosX) {
         display_temperature = false;
-        d_PosX = -10;
+        d_PosX = -4;
     }
-  
-    char2Arr(result[0], d_PosX - 2, 0);
-    char22Arr(result[3], d_PosX - 12, 0);
-    char2Arr(result[1], d_PosX - 8, 0);
+
+
+    char2Arr(result[0], d_PosX - 7, 0);
+    char22Arr(result[3], d_PosX - 17, 0);
+    char2Arr(result[1], d_PosX - 13, 0);
     
 
     if(weatherTemp[0] != ' '){
-        char2Arr('E', d_PosX - 23, 0);
-        char2Arr('R', d_PosX - 29, 0);
+        char2Arr('E', d_PosX - 28, 0);
+        char2Arr('R', d_PosX - 34, 0);
     }else{
-        if(1 > 0){
-            char2Arr(weatherTemp[0], d_PosX - 23, 0);
-            char2Arr(weatherTemp[1], d_PosX - 29, 0);
-            char2Arr('F', d_PosX - 37, 0);
+        char2Arr(weatherTemp[0], d_PosX - 28, 0);
+        char2Arr(weatherTemp[1], d_PosX - 34, 0);
+        if(weatherTempFahrenheit){
+            char2Arr('F', d_PosX - 42, 0);
         }else{
-            char2Arr(weatherTemp[0], d_PosX - 23, 0);
-            char2Arr(weatherTemp[1], d_PosX - 29, 0);
-            char2Arr('C', d_PosX - 37, 0);
+            char2Arr('C', d_PosX - 42, 0);
         }
     }
-
-
 
     refresh_display();
     delay(50);

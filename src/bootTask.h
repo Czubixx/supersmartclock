@@ -2,10 +2,12 @@ int timeZone = 0;
 int set_temperature = 0;
 char ntpServerName[33];
 int trialsNtp_reqest = 0;
-int brightness_value = -1;
+int brightness_value = 2;
+bool brighness_auto = true;
 
 
 String weatherApi;
+bool weatherTempFahrenheit;
 String watherCity;
 String serverName;
 
@@ -36,14 +38,13 @@ int nightModeToMin;
 
 
 
-void setBrightness(int value){
-    if(value == -1){
-        Serial.println("AUTO");
-        brightness_value = -1;
+void setBrightness(int value, bool auto_brighness){
+    if(auto_brighness){
+        brighness_auto = true;
     }else{
-        brightness_value = value;
-        Serial.println(value);
         max7219_set_brightness(value);
+        brightness_value = value;
+        brighness_auto = false;
     }
 }
 void readNTPtimeZone(){
@@ -84,7 +85,7 @@ bool tempInfahrenheit(){
 
 
 
-bool weatherTempInfahrenheit(){
+void weatherTempInfahrenheit(){
     File files = SPIFFS.open("/config.json", "r");
     DynamicJsonDocument doc(3000);
     deserializeJson(doc, files);
@@ -92,7 +93,7 @@ bool weatherTempInfahrenheit(){
 
     bool conftemp = doc["weather"]["fahrenheit"];
 
-    return conftemp;
+   weatherTempFahrenheit = conftemp;
 }
 
 

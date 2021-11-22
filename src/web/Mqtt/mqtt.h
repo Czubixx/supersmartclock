@@ -22,7 +22,7 @@ void callback(char * topic, byte * payload, unsigned int length) {
     }
   }
   else if (topicStr == mqtt_topic_brightness.c_str()){
-      setBrightness(message.toInt());
+      setBrightness(message.toInt(), false);
   }
   else if (topicStr == mqtt_topic_alarm.c_str()){
     displayAlarm(message, String(hour()), String(minute()), 0);

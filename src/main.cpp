@@ -21,10 +21,9 @@
 
 WiFiClient espClient;
 
-
 #include "matrix/max7219.h"
-#include "matrix/diplayText.h"
 #include "bootTask.h"
+#include "matrix/diplayText.h"
 #include "web/connect.h"
 #include "web/update.h"
 #include "weather.h"
@@ -34,7 +33,7 @@ WiFiClient espClient;
 #include "alarm.h"
 #include "web/server.h"
 
-           
+#define fotresistor A0           
               
                       
 bool f_tckr1s = false;
@@ -58,6 +57,7 @@ void setup() {
     pinMode(D2, OUTPUT);
     pinMode(CS, OUTPUT);
     pinMode(D1, INPUT);
+    pinMode(fotresistor, INPUT);
     digitalWrite(CS, HIGH);
     Serial.begin(115200);
     SPI.begin();
@@ -84,7 +84,7 @@ void setup() {
     Serial.println(WiFi.gatewayIP());
     tckr.attach(0.05, timer50ms);
     renderPageSetup();
-    setBrightness(-1);
+    setBrightness(0, true);
     readAlarmFormFile();
     getNightMode();
 }
@@ -128,6 +128,7 @@ int lastTime =0;
 bool nightMode = false;
 
 void loop() {
+    unsigned long brighness_auto_delay = 0;
     unsigned int sek1 = secunde2(), sek2 = secude1();
     unsigned int min1 = minuts2(), min2 = minuts1();
     unsigned int std1 = hours2(), std2 = hour1();
@@ -165,8 +166,7 @@ void loop() {
     }
 
     // do 06:30 od 23:15 
-    Serial.println(nightModeFormHour);
-    Serial.println(nightModeFormMin);
+
     while (true) {
         yield();
         if(WiFi.status()== WL_CONNECTED){
@@ -273,10 +273,7 @@ void loop() {
                 std22 = std2;
                 f_tckr1s = false;
             }
-                // if (digitalRead(D1) == HIGH){
-                //     printTemperature(insideThermometer);
-                //     display_temperature = true;
-                // }
+
             if (digitalRead(D1) == HIGH){
                 if(!nightMode){
                     printTemperature(insideThermometer);
@@ -371,19 +368,7 @@ void loop() {
                             sc6 = 0;
                     }
                     else{
-                        tempLoop();
                         char2Arr(48 + std2, z_PosX + 1, 0);
-
-                    //   char2Arr(result[0], d_PosX - 3, 0);
-                    //   char22Arr(result[3], d_PosX - 13, 0);
-                    //   char2Arr(result[1], d_PosX - 9, 0);
-
-
-                    //   char2Arr(weatherTemp[1], d_PosX - 29, 0);
-                    //   char2Arr(weatherTemp[0], d_PosX - 23, 0);
-
-
-
 
                         refresh_display(); //alle 50ms
                         if (f_scrollend_y == true) {
@@ -399,14 +384,22 @@ void loop() {
         alarmWaiting();
         getWeather();
         mqttLoop();
+        tempLoop();
         
-
-       // renderPageLoop();
+        if(brighness_auto && (unsigned long)(millis() - brighness_auto_delay) >= 5000){
+            int test = analogRead(fotresistor);
+            test = map(test, 0, 1024, 0, 15);
+            Serial.println(test);
+            max7219_set_brightness(test);
+            brightness_value = test;
+            brighness_auto_delay = millis();
+        }
         
         if(scrolingText == true){
             ScrollTextAnimation();    
         }
         if(display_temperature){
+            Serial.println(z_PosX);
             displayTemperature();
         }
         }

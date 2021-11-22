@@ -140,8 +140,9 @@ void renderPageSetup(){
         deserializeJson(doc, postBody);
 
         int value = doc["value"];
+        bool auto_brighness = doc["auto"];
 
-        setBrightness(value); 
+        setBrightness(value, auto_brighness); 
 
         server.sendHeader("Access-Control-Allow-Origin", "*");
         String sendBody = "{\"value\":\"" + String(value) + "\"}";
@@ -396,7 +397,8 @@ void renderPageSetup(){
     server.on("/data", []() {
         DynamicJsonDocument doc(1024);
 
-        doc["brightness"] = brightness_value;
+        doc["brightness"]["value"] = brightness_value;
+        doc["brightness"]["auto"] = brighness_auto;
         doc["ntpIP"]   = ntpServerName;
 
         doc["nightMode"]["enable"] = nightModeEnable;
@@ -410,7 +412,7 @@ void renderPageSetup(){
         doc["temperature"]["value"] = set_temperature;
         doc["temperature"]["fahrenheit"] = tempInfahrenheit();
         doc["weather"]["city"] = watherCity;
-        doc["weather"]["fahrenheit"] = weatherTempInfahrenheit();
+        doc["weather"]["fahrenheit"] = weatherTempFahrenheit;
         doc["mqtt"][0] = mqtt_server;
         doc["mqtt"][1] = mqtt_user;
         doc["mqtt"][2] = mqtt_topic;
