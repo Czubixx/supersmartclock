@@ -5,6 +5,8 @@ int trialsNtp_reqest = 0;
 int brightness_value = 2;
 bool brighness_auto = true;
 
+bool youtube_display = true;
+
 
 String weatherApi;
 bool weatherTempFahrenheit;
@@ -20,6 +22,7 @@ String mqtt_topic_mes;
 String mqtt_topic_temp;
 String mqtt_topic_brightness;
 String mqtt_topic_alarm;
+String mqtt_topic_availability;
 
 String wifi__ssid;
 String wifi__pass;
@@ -147,6 +150,7 @@ void getMqtt(){
     mqtt_topic_temp = mqtt_topic.c_str() + String("/temp");
     mqtt_topic_brightness = mqtt_topic.c_str() + String("/b");
     mqtt_topic_alarm = mqtt_topic.c_str() + String("/a");
+    mqtt_topic_availability = mqtt_topic.c_str() + String("/availability");
 }
 
 String getFirmwareVersion(){

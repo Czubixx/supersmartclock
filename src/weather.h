@@ -4,32 +4,32 @@ unsigned long getWeatherDelay_Run = 0;
 bool fahrenheit = true;
 
 void getWeather(){
-    if((unsigned long)(millis() - getWeatherDelay_Run) >= 60000 && minute() == 40){
+    if((unsigned long)(millis() - getWeatherDelay_Run) >= 30000 && minute() == 45){
         getWeatherDelay = true;
         getWeatherDelay_Run = millis();
     }
+
 
     if(getWeatherDelay == true){
         HTTPClient http;
 
         String serverPath = serverName;
 
-        Serial.println(serverPath);
-
-        http.begin(espClient, serverPath.c_str());
-        
-
+        http.begin(httpClient, serverPath.c_str());
+    
         int httpResponseCode = http.GET();
         
         if (httpResponseCode>0) {
             Serial.print("HTTP Response code: ");
             Serial.println(httpResponseCode);
             String payload = http.getString();
+            StaticJsonDocument<200> filter;
+            filter["list"][0]["main"]["temp"] = true;
             DynamicJsonDocument weatherJSON(512);
-            deserializeJson(weatherJSON, payload);
-            Serial.println(payload);
+            deserializeJson(weatherJSON, payload, DeserializationOption::Filter(filter));
+
             float cod = weatherJSON["list"][0]["main"]["temp"];
-            weatherTempInfahrenheit();
+
             if(weatherTempFahrenheit){
                 cod = (cod*1.8)+32;
                 dtostrf(cod, 4, 1, weatherTemp);
@@ -48,7 +48,7 @@ void getWeather(){
             Serial.println(httpResponseCode);
             getWeatherDelay = true;
         }
-
+        http.end();
     } 
       // Free resources
 }

@@ -3,6 +3,7 @@
 #include <Ticker.h>
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
+#include <WiFiClientSecure.h>
 #include <FS.h>
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WebServer.h>
@@ -19,7 +20,9 @@
 #include "web/page.h"
 #include "Font_Data.h"
 
-WiFiClient espClient;
+WiFiClient httpClient;
+WiFiClient mqttClient;
+WiFiClientSecure httpsClient;
 
 #include "matrix/max7219.h"
 #include "bootTask.h"
@@ -27,14 +30,16 @@ WiFiClient espClient;
 #include "web/connect.h"
 #include "web/update.h"
 #include "weather.h"
+#include "youtube.h"
 #include "temp.h"
 #include "ntp.h"
 #include "web/Mqtt/mqtt.h"
 #include "alarm.h"
 #include "web/server.h"
 
+
 #define fotresistor A0           
-              
+#define display_auto_scroll false         
                       
 bool f_tckr1s = false;
 bool f_tckr50ms = false;
@@ -73,6 +78,7 @@ void setup() {
     createFile();
      getNetworkConfig();
     WifiConnectSetup();
+    weatherTempInfahrenheit();
     setWeather();
 
     tempSetup();
@@ -277,21 +283,13 @@ void loop() {
             if (digitalRead(D1) == HIGH){
                 if(!nightMode){
                     printTemperature(insideThermometer);
-                    display_temperature = true;
+                    if(!display_auto_scroll){
+                        display_temperature = true;
+                    }
                 }
                 Serial.println("TEST");
                 if(nightMode)
                     displayTime = true;
-                    // sc6 = 0;
-                    // sc5 = 0;
-                    // sc4 = 0;
-                    // sc3 = 0;
-                    // sc2 = 0;
-                    // sc1 = 0;
-                    // sc3_scroll = false;
-                    // sc4_scroll = false;
-                    // sc5_scroll = false;
-                    // sc6_scroll = false;
             }else{
                 if(nightMode){
                     displayTime = false;
@@ -381,27 +379,30 @@ void loop() {
                     // do something else
                 }
             }
-        alarmWaiting();
-        getWeather();
-        mqttLoop();
-        tempLoop();
-        
-        if(brighness_auto && (unsigned long)(millis() - brighness_auto_delay) >= 5000){
-            int test = analogRead(fotresistor);
-            test = map(test, 0, 1024, 0, 15);
-            Serial.println(test);
-            max7219_set_brightness(test);
-            brightness_value = test;
-            brighness_auto_delay = millis();
-        }
-        
-        if(scrolingText == true){
-            ScrollTextAnimation();    
-        }
-        if(display_temperature){
-            Serial.println(z_PosX);
-            displayTemperature();
-        }
+            alarmWaiting();
+            getWeather();
+            mqttLoop();
+            tempLoop();
+            
+            if(second() == 30 && display_auto_scroll){
+                display_temperature = true;
+            }
+
+            if(brighness_auto && (unsigned long)(millis() - brighness_auto_delay) >= 5000){
+                int test = analogRead(fotresistor);
+                test = map(test, 0, 1024, 0, 15);
+                Serial.println(test);
+                max7219_set_brightness(test);
+                brightness_value = test;
+                brighness_auto_delay = millis();
+            }
+            
+            if(scrolingText == true){
+                ScrollTextAnimation();    
+            }
+            if(display_temperature){
+                displayTemperature();
+            }
         }
     }  //end while(true)
     

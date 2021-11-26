@@ -1,5 +1,5 @@
 
-PubSubClient client(espClient);
+PubSubClient client(mqttClient);
 
 
 char temperature[10];
@@ -35,7 +35,7 @@ void reconnect() {
     Serial.println("Attempting MQTT connection...");
     Serial.println(mqtt_user);
     Serial.println(mqtt_password);
-    if (client.connect("smartMatrixLed", mqtt_user.c_str(), mqtt_password.c_str())) {
+    if(client.connect(mqtt_topic.c_str(), mqtt_user.c_str(), mqtt_password.c_str(), mqtt_topic_availability.c_str(), 1, true, "offline")){
       Serial.println("connected");
       client.subscribe(mqtt_topic_temp.c_str());
       client.subscribe(mqtt_topic_mes.c_str());
@@ -45,6 +45,7 @@ void reconnect() {
       Serial.println(mqtt_topic_mes.c_str());
       Serial.println(mqtt_topic_brightness.c_str());
       Serial.println(mqtt_topic_alarm.c_str());
+      client.publish(mqtt_topic_availability.c_str(), "online");
       mqtt_reconnect = true;
     } else {
       Serial.print("failed, rc=");
@@ -73,7 +74,6 @@ void mqttLoop(){
       reconnect();
     }
     client.loop();
-
     if(sendMqtt == true){
       if(WiFi.status()== WL_CONNECTED){
         sensors.requestTemperatures();

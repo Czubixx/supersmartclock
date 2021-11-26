@@ -32,6 +32,9 @@
         "from": [23,0],
         "to": [6,5]
     },
+    "displaySetings":{
+        "autoScroll": false
+    },
     "version": "v1.0b"
 
 }   
