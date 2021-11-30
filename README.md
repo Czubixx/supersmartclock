@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="/img/schemat.png">
+    <img src="/img/logo.png">
 </p>
 
 # SuperSmartClock🕒
@@ -34,7 +34,9 @@ Super Smart Clock is a perfect useful decoration, the cost of the entire clock i
 
 Connect all the elements according to the diagram, in case of problems contact me at hubert.kozlowski07@gmail.com
 
-//IMIAGE
+<p align="center">
+    <img src="/img/schemat.png">
+</p>
 
 ### Software
 
