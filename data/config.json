@@ -33,7 +33,8 @@
         "to": [6,5]
     },
     "displaySetings":{
-        "autoScroll": false
+        "autoScroll": false,
+        "type": "temp"
     },
     "version": "v1.0b"
 

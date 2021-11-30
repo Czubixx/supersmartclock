@@ -14,15 +14,16 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <WiFiUdp.h>
-#include <EEPROM.h>
 #include <Wire.h>
-
+bool display_date = false; 
 #include "web/page.h"
 #include "Font_Data.h"
 
 WiFiClient httpClient;
 WiFiClient mqttClient;
 WiFiClientSecure httpsClient;
+
+const char *mffonth[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
 #include "matrix/max7219.h"
 #include "bootTask.h"
@@ -39,7 +40,7 @@ WiFiClientSecure httpsClient;
 
 
 #define fotresistor A0           
-#define display_auto_scroll false         
+
                       
 bool f_tckr1s = false;
 bool f_tckr50ms = false;
@@ -92,6 +93,7 @@ void setup() {
     renderPageSetup();
     setBrightness(0, true);
     readAlarmFormFile();
+    displaySettings();
     getNightMode();
 }
 
@@ -157,21 +159,18 @@ void loop() {
 
     z_PosX = maxPosX;
     d_PosX = -4;
-    //  x=0; x1=0; x2=0;
-    Serial.println(weekday());
-    Serial.println(day());
+
     refresh_display();
     updown = true;
+
     if (updown == false) {
         y2 = -9;
         y1 = 13;
     }
-    if (updown == true) { //scroll  up to down
+    if (updown == true) {
         y2 = 8;
         y1 = -8;
     }
-
-    // do 06:30 od 23:15 
 
     while (true) {
         yield();
@@ -283,11 +282,10 @@ void loop() {
             if (digitalRead(D1) == HIGH){
                 if(!nightMode){
                     printTemperature(insideThermometer);
-                    if(!display_auto_scroll){
-                        display_temperature = true;
+                    if(!scrolingText && !autoScroll){
+                       display_temperature = true;
                     }
                 }
-                Serial.println("TEST");
                 if(nightMode)
                     displayTime = true;
             }else{
@@ -384,7 +382,7 @@ void loop() {
             mqttLoop();
             tempLoop();
             
-            if(second() == 30 && display_auto_scroll){
+            if(second() == 30 && autoScroll && !scrolingText){
                 display_temperature = true;
             }
 
@@ -397,11 +395,13 @@ void loop() {
                 brighness_auto_delay = millis();
             }
             
-            if(scrolingText == true){
+            if(scrolingText && !display_temperature){
                 ScrollTextAnimation();    
             }
-            if(display_temperature){
+            if(display_temperature && displayTemp){
                 displayTemperature();
+            }else if (display_temperature && !displayTemp){
+                displayDate();
             }
         }
     }  //end while(true)

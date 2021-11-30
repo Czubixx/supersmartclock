@@ -1,17 +1,21 @@
-int timeZone = 0; 
+
 int set_temperature = 0;
+
 char ntpServerName[33];
+int timeZone = 0; 
 int trialsNtp_reqest = 0;
+
 int brightness_value = 2;
 bool brighness_auto = true;
 
-bool youtube_display = true;
-
+bool autoScroll = false;
+bool displayTemp = false;
 
 String weatherApi;
 bool weatherTempFahrenheit;
 String watherCity;
 String serverName;
+bool getWeatherDelay = true;
 
 String mqtt_enable;
 String mqtt_server;
@@ -22,7 +26,9 @@ String mqtt_topic_mes;
 String mqtt_topic_temp;
 String mqtt_topic_brightness;
 String mqtt_topic_alarm;
+String mqtt_topic_notification;
 String mqtt_topic_availability;
+
 
 String wifi__ssid;
 String wifi__pass;
@@ -124,6 +130,25 @@ void setWeather(){
 
 }
 
+void displaySettings(){
+    File files = SPIFFS.open("/config.json", "r");
+    DynamicJsonDocument doc(2048);
+    deserializeJson(doc, files);
+    files.close();
+
+    bool scroll = doc["displaySetings"]["autoScroll"]; 
+    String type = doc["displaySetings"]["type"];
+
+    if(type == "temp"){
+        displayTemp = true;
+        getWeatherDelay = true;
+    }else{
+        displayTemp = false;
+    }
+
+    autoScroll = scroll;
+}
+
 void getMqtt(){
     
     File files = SPIFFS.open("/config.json", "r");
@@ -150,6 +175,7 @@ void getMqtt(){
     mqtt_topic_temp = mqtt_topic.c_str() + String("/temp");
     mqtt_topic_brightness = mqtt_topic.c_str() + String("/b");
     mqtt_topic_alarm = mqtt_topic.c_str() + String("/a");
+    mqtt_topic_notification = mqtt_topic.c_str() + String("/notification");
     mqtt_topic_availability = mqtt_topic.c_str() + String("/availability");
 }
 

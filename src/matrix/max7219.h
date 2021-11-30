@@ -9,12 +9,12 @@ unsigned short LEDarr[anzMAX][8];
 unsigned short helpArrMAX[anzMAX * 8];              
 unsigned short helpArrPos[anzMAX * 8];   
 
-int sign0[4][9] = {
-    {9, 255, 129, 129, 129, 129, 129, 129, 255},
-    {9, 255, 129, 129, 129, 129, 129, 129, 255},
-    {9, 255, 129, 129, 129, 129, 129, 129, 255},
-    {9, 255, 129, 129, 129, 129, 129, 129, 255},
-};
+// int sign0[4][9] = {
+//     {9, 255, 129, 129, 129, 129, 129, 129, 255},
+//     {9, 255, 129, 129, 129, 129, 129, 129, 255},
+//     {9, 255, 129, 129, 129, 129, 129, 129, 255},
+//     {9, 255, 129, 129, 129, 129, 129, 129, 255},
+// };
 
 
 const unsigned short InitArr[7][2] = { { 0x0C, 0x00 },    // display off
@@ -139,53 +139,53 @@ void refresh_display() //take info into LEDarr把信息输入LEDarr
     }
 }
 //**************************************************************************************************
-void fdgdfg(String ch, int PosX, short PosY) { //characters into arr
-    int i, j, k, l, m, o1, o2, o3, o4;  //in LEDarr
-    unsigned short const sdfsdf[4][9] ={
-        {9, 255, 129, 129, 129, 129, 129, 129, 255},
-        { 0x9, 0x80, 0x9C, 0x84, 0x9C, 0x90, 0x9C, 0x80, 0x80 },
-        { 0x9, 0x80, 0x8E, 0x82, 0x8E, 0x82, 0x8E, 0x80, 0x80 },
-        { 0x9, 0x80, 0x94, 0x94, 0x9C, 0x84, 0x84, 0x80, 0x80 },
-    };
+// void fdgdfg(String ch, int PosX, short PosY) { //characters into arr
+//     int i, j, k, l, m, o1, o2, o3, o4;  //in LEDarr
+//     unsigned short const sdfsdf[4][9] ={
+//         {9, 255, 129, 129, 129, 129, 129, 129, 255},
+//         { 0x9, 0x80, 0x9C, 0x84, 0x9C, 0x90, 0x9C, 0x80, 0x80 },
+//         { 0x9, 0x80, 0x8E, 0x82, 0x8E, 0x82, 0x8E, 0x80, 0x80 },
+//         { 0x9, 0x80, 0x94, 0x94, 0x9C, 0x84, 0x84, 0x80, 0x80 },
+//     };
    
-    if(ch == "1")             
-        o4 = sign0[0][0]; 
-    if(ch == "2")
-        o4 = sign0[1][0]; 
-    if(ch == "3")
-        o4 = sign0[2][0];
-    if(ch == "4")
-        o4 = sign0[3][0];
-                      //character width
-    o3 = 1 << (o4 - 1);
-        for (i = 0; i < o4; i++) {
-            if (((PosX - i <= maxPosX) && (PosX - i >= 0))
-                    && ((PosY > -8) && (PosY < 8))) //within matrix?
-            {
-                o1 = helpArrPos[PosX - i];
-                o2 = helpArrMAX[PosX - i];
-                for (j = 0; j < 8; j++) {
-                    if (((PosY >= 0) && (PosY <= j)) || ((PosY < 0) && (j < PosY + 8))) //scroll vertical
-                    {
-                        if(ch == "1")
-                            l = sign0[0][j + 1];
-                        if(ch == "2")
-                            l = sign0[1][j +1];
-                        if(ch == "3")
-                            l = sign0[2][j +1];
-                        if(ch == "4")
-                            l = sign0[3][j +1];
+//     if(ch == "1")             
+//         o4 = sign0[0][0]; 
+//     if(ch == "2")
+//         o4 = sign0[1][0]; 
+//     if(ch == "3")
+//         o4 = sign0[2][0];
+//     if(ch == "4")
+//         o4 = sign0[3][0];
+//                       //character width
+//     o3 = 1 << (o4 - 1);
+//         for (i = 0; i < o4; i++) {
+//             if (((PosX - i <= maxPosX) && (PosX - i >= 0))
+//                     && ((PosY > -8) && (PosY < 8))) //within matrix?
+//             {
+//                 o1 = helpArrPos[PosX - i];
+//                 o2 = helpArrMAX[PosX - i];
+//                 for (j = 0; j < 8; j++) {
+//                     if (((PosY >= 0) && (PosY <= j)) || ((PosY < 0) && (j < PosY + 8))) //scroll vertical
+//                     {
+//                         if(ch == "1")
+//                             l = sign0[0][j + 1];
+//                         if(ch == "2")
+//                             l = sign0[1][j +1];
+//                         if(ch == "3")
+//                             l = sign0[2][j +1];
+//                         if(ch == "4")
+//                             l = sign0[3][j +1];
 
-                        m = (l & (o3 >> i));  //e.g. o4=7  0zzzzz0, o4=4  0zz0
-                        if (m > 0)
-                            LEDarr[o2][j - PosY] = LEDarr[o2][j - PosY] | (o1);  //set point
-                        else
-                            LEDarr[o2][j - PosY] = LEDarr[o2][j - PosY] & (~o1); //clear point
-                    }
-                }
-            }
-        }
-}
+//                         m = (l & (o3 >> i));  //e.g. o4=7  0zzzzz0, o4=4  0zz0
+//                         if (m > 0)
+//                             LEDarr[o2][j - PosY] = LEDarr[o2][j - PosY] | (o1);  //set point
+//                         else
+//                             LEDarr[o2][j - PosY] = LEDarr[o2][j - PosY] & (~o1); //clear point
+//                     }
+//                 }
+//             }
+//         }
+// }
 void char2Arr(unsigned short ch, int PosX, short PosY) { //characters into arr
     int i, j, k, l, m, o1, o2, o3, o4;  //in LEDarr
     PosX++;

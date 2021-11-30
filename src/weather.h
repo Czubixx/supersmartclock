@@ -1,5 +1,4 @@
 
-bool getWeatherDelay = true;
 unsigned long getWeatherDelay_Run = 0;
 bool fahrenheit = true;
 
@@ -10,7 +9,7 @@ void getWeather(){
     }
 
 
-    if(getWeatherDelay == true){
+    if(getWeatherDelay && displayTemp){
         HTTPClient http;
 
         String serverPath = serverName;
@@ -33,12 +32,8 @@ void getWeather(){
             if(weatherTempFahrenheit){
                 cod = (cod*1.8)+32;
                 dtostrf(cod, 4, 1, weatherTemp);
-                Serial.println(weatherTemp[0]);
-                Serial.println(weatherTemp[1]);
             }else{
                 dtostrf(cod, 4, 1, weatherTemp);
-                Serial.println(weatherTemp[0]);
-                Serial.println(weatherTemp[1]);
             }
             getWeatherDelay = false;
             

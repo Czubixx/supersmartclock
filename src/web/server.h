@@ -6,17 +6,17 @@ void renderPageSetup(){
         server.send(200, "text/html", home_page_HTML);
     });
 
-    server.on("/style", HTTP_GET,[]() {
-   // String s = home_page_CSS;
-   // String content(home_page_CSS);
-    server.send(200, "text/css", home_page_CSS);
+//     server.on("/style", HTTP_GET,[]() {
+//    // String s = home_page_CSS;
+//    // String content(home_page_CSS);
+//     server.send(200, "text/css", home_page_CSS);
         
-    });
-    server.on("/app", HTTP_GET,[]() {
-   // String s = home_page_JS;
-    server.send(200, "text/js", home_page_JS);
+//     });
+//     server.on("/app", HTTP_GET,[]() {
+//    // String s = home_page_JS;
+//     server.send(200, "text/js", home_page_JS);
         
-    });
+//     });
 
 
     // -------------------------------- Set ----------------------------------------
@@ -149,6 +149,7 @@ void renderPageSetup(){
         server.send(200, "application/json", sendBody);
     });
 
+
     server.on("/set/timezone", HTTP_POST, []() {
         String postBody = server.arg("plain");
         DynamicJsonDocument doc(128);
@@ -232,6 +233,33 @@ void renderPageSetup(){
         ESP.restart();
     });
 
+    server.on("/set/displaysettings", HTTP_POST, []() {
+        String postBody = server.arg("plain");
+        DynamicJsonDocument doc(64);
+        deserializeJson(doc, postBody);
+
+        bool autoScroll = doc["autoScroll"];
+        String type = doc["type"];
+        
+        File fileRead = SPIFFS.open("/config.json", "r");
+        DynamicJsonDocument configFile(2000);
+        deserializeJson(configFile, fileRead);
+        fileRead.close();
+        JsonObject displaySetings = configFile.createNestedObject("displaySetings");
+        
+        displaySetings["autoScroll"] = autoScroll;
+        displaySetings["type"] = type;
+
+        File fileWrite = SPIFFS.open("/config.json", "w");
+        serializeJsonPretty(configFile, fileWrite);
+        serializeJsonPretty(configFile, Serial);
+        fileWrite.close();
+
+        displaySettings();
+        
+        server.sendHeader("Access-Control-Allow-Origin", "*");
+        server.send(200, "application/json", "{\"status\":200}");
+    });
 
     server.on("/set/mqtt", HTTP_POST, []() {
         String postBody = server.arg("plain");
@@ -407,6 +435,8 @@ void renderPageSetup(){
 
         doc["nightMode"]["to"][0] = nightModeToHour;
         doc["nightMode"]["to"][1] = nightModeToMin;
+        doc["displaySettings"]["autoScroll"] = autoScroll;
+        doc["displaySettings"]["displayTemp"] = displayTemp;
 
         doc["timeZone"] = timeZone;
         doc["temperature"]["value"] = set_temperature;
