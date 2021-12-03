@@ -34,6 +34,10 @@ Super Smart Clock is a perfect useful decoration, the cost of the entire clock i
 
 Connect all the elements according to the diagram, in case of problems contact me at hubert.kozlowski07@gmail.com
 
+DIN - D7
+CS - D4
+CLK - D5
+
 <p align="center">
     <img src="/img/schemat.png">
 </p>
