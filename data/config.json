@@ -1,41 +1,5 @@
 {
-    "wifi":{
-        "ssid": "SpiderNet_21",
-        "pass": "Lajla123",
-        "staticIpEnable": false,
-        "ipAddres": [192,168,0,53],
-        "gateway": [192,168,0,1],
-        "subnet" : [255,255,255,0]
-    },
-    "weather": {
-        "api" : "7c1523990b3d40bc4074020aaee034ff",
-        "city": "Koziegłowy",
-        "fahrenheit": false
-    },
-    "temp": {
-        "conf": 1,
-        "fahrenheit": false
-    },
-    "timezone": {
-        "ntp": "time.google.com",
-        "zone": "1"
-    },
-    "mqtt":{
-        "enable":"1",
-        "name": "hubert",
-        "pass": "hubci 22",
-        "brokerIP": "192.168.0.109",
-        "topic": "smartclock"
-    },
-    "nightmode": {
-        "enable": false,
-        "from": [23,0],
-        "to": [6,5]
-    },
-    "displaySetings":{
-        "autoScroll": false,
-        "type": "temp"
-    },
+
     "version": "v1.0b"
 
 }   
