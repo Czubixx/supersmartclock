@@ -29,6 +29,7 @@ Super Smart Clock is a perfect useful decoration, the cost of the entire clock i
 - Resistor 4.7K Ohm 5% 1/4W
 - Resistor 10K Ohm 5% 1/4W
 - Photoresistor 50-100kΩ 100mW GM5539
+- buzzer 5v
 
 ### Schematic diagram
 
